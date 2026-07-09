@@ -40,7 +40,7 @@ rupamk@srmist.edu.in
 \maketitle
 
 \begin{abstract}
-Machine learning models deployed in high-stakes environments often inherit and amplify historical biases present in training data. This study presents a comprehensive experimental framework for bias detection, mitigation, and explanation across three diverse datasets: Adult Income, COMPAS Recidivism, and Statlog German Credit. Fairness is quantified using Statistical Parity Difference (SPD), Equal Opportunity (EO), Disparate Impact (DI), and Average Odds Difference (AOD), while performance is assessed using Balanced Accuracy and the Matthews Correlation Coefficient (MCC) to account for class imbalance. We compare Reweighting (pre-processing), Adversarial Debiasing (in-processing), and Threshold Adjustment (post-processing) against standard machine learning and Artificial Neural Network (ANN) baselines. Explainable AI (XAI) via SHAP interaction analysis is employed to mathematically isolate how sensitive attributes interact with non-sensitive proxies. Results demonstrate that Threshold Adjustment achieves the most consistent reduction in disparities. Conversely, Adversarial Debiasing exhibits catastrophic variance on small datasets, necessitating multi-run averaging. SHAP interaction analyses successfully expose indirect biases, emphasizing the critical need to integrate multi-metric fairness evaluation, mitigation strategies, and XAI to ensure transparency in automated decision-making.
+Machine learning models deployed in high-stakes environments often inherit and amplify historical biases present in training data. This study presents a comprehensive experimental framework for bias detection, mitigation, and explanation across three diverse datasets: Adult Income, COMPAS Recidivism, and Statlog German Credit. Fairness is quantified using Statistical Parity Difference (SPD), Equal Opportunity (EO), Disparate Impact (DI), and Average Odds Difference (AOD), while performance is assessed using Balanced Accuracy and the Matthews Correlation Coefficient (MCC) to account for class imbalance. We compare Reweighting (pre-processing), Adversarial Debiasing (in-processing), and Threshold Adjustment (post-processing) against standard machine learning and Artificial Neural Network (ANN) baselines. Explainable AI (XAI) via SHAP interaction analysis is employed to isolate how sensitive attributes interact with non-sensitive proxies. Results demonstrate that Threshold Adjustment achieves the most consistent reduction in disparities. Conversely, Adversarial Debiasing exhibits catastrophic variance on small datasets, necessitating multi-run averaging. SHAP interaction analyses successfully expose indirect biases, emphasizing the critical need to integrate multi-metric fairness evaluation, mitigation strategies, and XAI to ensure transparency in automated decision-making.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -50,20 +50,20 @@ Algorithmic Fairness, Bias Mitigation, Explainable AI, SHAP, Demographic Parity,
 \section{Introduction}
 Machine learning (ML) models are increasingly deployed to automate high-stakes decision-making across domains like hiring, credit approval, and criminal justice \cite{R1, R4, R11}. While offering unprecedented efficiency, an extensive body of research indicates these systems can produce inherently unfair results that disproportionately penalize protected demographic groups \cite{R18, R20}. If historical data is tainted by societal inequalities, deep learning architectures do not simply reflect these biases—they often magnify them into the objective function, leading to untrustworthy predictions \cite{R7, R9, R12}.
 
-Mitigating these disparities introduces complex operational challenges. Studies consistently demonstrate an inherent mathematical tension—the fairness-accuracy trade-off—where enforcing strict parity inevitably degrades predictive performance \cite{R6, R14, R19}. Furthermore, identifying bias macroscopically is insufficient; non-sensitive attributes frequently act as hidden proxies for protected characteristics \cite{R17}. To uncover these hidden sources, Explainable AI (XAI) methods, such as SHAP \cite{R21}, are required to transform models into transparent systems, acknowledging inherent mathematical attribution limits \cite{R15}.
+Mitigating these disparities introduces complex operational challenges. Studies consistently demonstrate an inherent tension—the fairness-accuracy trade-off—where enforcing strict parity inevitably degrades predictive performance \cite{R6, R14, R19}. Furthermore, identifying bias macroscopically is insufficient; non-sensitive attributes frequently act as hidden proxies for protected characteristics \cite{R17}. To uncover these hidden sources, Explainable AI (XAI) methods, such as SHAP \cite{R21}, are required to transform models into transparent systems, acknowledging inherent attribution limits \cite{R15}.
 
 To bridge the gap between theoretical fairness metrics and practical interpretability, this study implements a \textbf{fairness-aware machine learning framework}. By evaluating an integrated pipeline across three distinct public datasets, this paper provides a transparent, multi-metric evaluation of pre-, in-, and post-processing interventions against rigorous neural network baselines, uniquely leveraging SHAP interactions to isolate indirect proxy biases.
 
 \section{Literature Survey}
 \subsection{Origins of Bias and Performance Tensions}
-The mathematical and societal foundations of algorithmic fairness trace back to formulations by Mehrabi \textit{et al.} \cite{R20}. Recent literature categorizes bias into data-driven origins, algorithmic constraints, and deployment loops \cite{R3, R7}. Deep learning frequently exacerbates these anomalies by optimizing purely for historical patterns without fairness constraints \cite{R7, R11}. 
+The and societal foundations of algorithmic fairness trace back to formulations by Mehrabi \textit{et al.} \cite{R20}. Recent literature categorizes bias into data-driven origins, algorithmic constraints, and deployment loops \cite{R3, R7}. Deep learning frequently exacerbates these anomalies by optimizing purely for historical patterns without fairness constraints \cite{R7, R11}. 
 
-Enforcing strict fairness metrics reveals deep-seated mathematical incompatibilities. Foundational work by Kleinberg \textit{et al.} and Chouldechova demonstrates that mutually exclusive fairness criteria—specifically, calibration within groups versus equalized odds—cannot be simultaneously satisfied when base rates of the target variable differ across protected groups \cite{R22, R23}. This fairness-accuracy trade-off is not merely an algorithmic failure, but a mathematically unavoidable reality where enforcing parity inherently dampens global metrics like accuracy or $F_1$-scores when overriding unequal socio-technical base rates \cite{R14, R19}.
+Enforcing strict fairness metrics reveals deep-seated incompatibilities. Foundational work by Kleinberg \textit{et al.} and Chouldechova demonstrates that mutually exclusive fairness criteria—specifically, calibration within groups versus equalized odds—cannot be simultaneously satisfied when base rates of the target variable differ across protected groups \cite{R22, R23}. This fairness-accuracy trade-off is not merely an algorithmic failure, but a unavoidable reality where enforcing parity inherently dampens global metrics like accuracy or $F_1$-scores when overriding unequal socio-technical base rates \cite{R14, R19}.
 
 \subsection{Mitigation Strategies and XAI}
 Bias mitigation is historically partitioned into pre-processing, in-processing, and post-processing \cite{R13}. Pre-processing (e.g., sample reweighting) alters the underlying data distribution \cite{R12}. In-processing methodologies, including adversarial debiasing, penalize the internal loss function of neural networks, though they are notoriously unstable on small datasets \cite{R9}. Post-processing alters individual decision thresholds to balance true positive rates without re-training \cite{R13}, frequently providing more reliable corrections in volatile environments like criminal recidivism \cite{R8}.
 
-Furthermore, models legally blinded to sensitive attributes often utilize non-protected features as mathematically viable proxies \cite{R17}. To diagnose this, the research community relies on SHAP (SHapley Additive exPlanations) \cite{R21}. While SHAP interaction analysis successfully isolates multi-variable proxy dependencies, recent proofs by Bilodeau \textit{et al.} establish mathematical impossibility theorems for universal attribution guarantees, warning practitioners that explanations require statistical caution \cite{R15}.
+Furthermore, models legally blinded to sensitive attributes often utilize non-protected features as viable proxies \cite{R17}. To diagnose this, the research community relies on SHAP (SHapley Additive exPlanations) \cite{R21}. While SHAP interaction analysis successfully isolates multi-variable proxy dependencies, recent proofs by Bilodeau \textit{et al.} establish impossibility theorems for universal attribution guarantees, warning practitioners that explanations require statistical caution \cite{R15}.
 
 \section{Dataset Description}
 To rigorously evaluate the generalizability of our framework, we selected three publicly available datasets spanning diverse domains.
@@ -84,7 +84,7 @@ Our methodology is structured into a five-phase pipeline explicitly designed to 
 We established Logistic Regression (LR) and Random Forest (RF) as baseline architectures. These specific models were selected to explicitly contrast a highly interpretable, parametric linear decision boundary against a highly complex, non-parametric ensemble method capable of learning deep non-linear interactions. To ensure a scientifically valid evaluation of deep learning interventions, we also train a baseline Artificial Neural Network (ANN). To rigorously evaluate performance on class-imbalanced data, we rely on \textbf{Balanced Accuracy} and the \textbf{Matthews Correlation Coefficient (MCC)}.
 
 \subsection{Hyperparameter Optimization, Reproducibility, and Leakage Prevention}
-To rigorously evaluate model performance while preventing data leakage, we utilize a strict 3-way data partition (70\% Train, 15\% Validation, 15\% Test). Hyperparameter optimization was performed using a grid search on the training splits. For Random Forest (RF) models, we selected 50 estimators and a maximum depth of 10 to prevent overfitting. The baseline Artificial Neural Network (ANN) and Adversarial Debiasing utilize a multilayer perceptron (64 and 32 neurons, Adam solver, batch size 128). All algorithms (both deterministic and stochastic) are tracked across fixed random seeds (42 to 46) to provide rigorous standard deviation bounds. Crucially, post-processing Threshold Adjustment calibrations are computed strictly on the validation set before being evaluated on the unseen test cohort, mathematically eliminating data leakage.
+To rigorously evaluate model performance while preventing data leakage, we utilize a strict 3-way data partition (70\% Train, 15\% Validation, 15\% Test). Hyperparameter optimization was performed using a grid search on the training splits. For Random Forest (RF) models, we selected 50 estimators and a maximum depth of 10 to prevent overfitting. The baseline Artificial Neural Network (ANN) and Adversarial Debiasing utilize a multilayer perceptron (64 and 32 neurons, Adam solver, batch size 128). Stochastic algorithms (Random Forest, ANN, Adversarial Debiasing) are tracked across 5 fixed random seeds (42 to 46) to provide rigorous standard deviation bounds. Deterministic algorithms (Logistic Regression, Reweighting) yield identical decision boundaries across fixed data splits, thus their variance across runs is zero. Crucially, post-processing Threshold Adjustment calibrations are computed strictly on the validation set before being evaluated on the unseen test cohort, eliminating data leakage.
 
 \subsection{Formalization of Evaluation Metrics}
 To formally quantify outcome and procedural fairness, we utilize standard probabilistic notation where $Y$ is the true label, $\hat{Y}$ the predicted label, and $A$ the protected attribute ($A=1$ privileged).
@@ -100,13 +100,15 @@ $$MCC = \frac{TP \times TN - FP \times FN}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}$
 \subsection{Bias Mitigation Toolkits and Techniques}
 To ensure reproducibility, our fairness interventions utilize implementations from IBM AI Fairness 360 (AIF360) and Microsoft Fairlearn.
 \begin{itemize}
-    \item \textbf{Reweighting (Pre-processing):} Utilizing AIF360, this calculates the probability of assigning specific protected class outcomes and assigns fairness-aware weights to instances. By mathematically neutralizing historical imbalances, this method is fundamentally designed to reduce \textbf{Demographic/Statistical Parity (SPD)} disparities.
+    \item \textbf{Reweighting (Pre-processing):} Utilizing AIF360, this calculates the probability of assigning specific protected class outcomes and assigns fairness-aware weights to instances. By neutralizing historical imbalances, this method is fundamentally designed to reduce \textbf{Demographic/Statistical Parity (SPD)} disparities.
     \item \textbf{Adversarial Debiasing (In-processing):} Utilizing AIF360, this employs a generative adversarial network. To isolate the debiasing effect, our primary predictor mirrors our baseline ANN: a Multilayer Perceptron with two hidden layers (64, 32 neurons), ReLU activation, and standard cross-entropy loss. The adversarial penalty forces the primary predictor to unlearn latent correlations with the protected attribute, explicitly targeting reductions in \textbf{Statistical Parity (SPD)}. To document inherent stochastic volatility, results report the arithmetic mean and standard deviation ($\pm$) across five independent initializations.
-    \item \textbf{Threshold Adjustment (Post-processing):} Implemented via Fairlearn's \textit{ThresholdOptimizer}, utilizing a Calibrated Equalized Odds constraint. By fine-tuning probabilistic decision thresholds, this algorithm is mathematically guaranteed to target and minimize \textbf{Equal Opportunity (EO)} disparities by equalizing True Positive Rates across groups.
+    \item \textbf{Threshold Adjustment (Post-processing):} Implemented via Fairlearn's \textit{ThresholdOptimizer}, utilizing a Calibrated Equalized Odds constraint. By fine-tuning probabilistic decision thresholds, this algorithm targets and minimizes \textbf{Equal Opportunity (EO)} disparities by equalizing True Positive Rates across groups.
+    
+    \item \textbf{Exponentiated Gradient (In-processing):} A reductions approach by Agarwal \textit{et al.} \cite{R12} implemented via Fairlearn, which reduces fair classification to a sequence of cost-sensitive classification problems. This method optimizes for Equalized Odds directly during the training of the base estimator (Logistic Regression).
 \end{itemize}
 
 \subsection{Explainability Analysis (XAI)}
-We integrate SHAP Interaction Values to move beyond standard feature importance. By calculating mathematical interaction effects between the protected attribute and non-sensitive features, we visually and quantitatively isolate the indirect proxy mechanisms driving the model's logic.
+We integrate SHAP Interaction Values to move beyond standard feature importance. By calculating interaction effects between the protected attribute and non-sensitive features, we visually and quantitatively isolate the indirect proxy mechanisms driving the model's logic.
 
 \begin{table*}[t]
 \centering
@@ -121,22 +123,25 @@ We integrate SHAP Interaction Values to move beyond standard feature importance.
  & RF (Baseline) & 0.159 $\pm$ 0.002 & 0.276 $\pm$ 0.004 & 0.116 $\pm$ 0.008 & 0.084 $\pm$ 0.004 & 0.858 $\pm$ 0.001 & 0.754 $\pm$ 0.002 & 0.587 $\pm$ 0.003 \\
  & ANN (Baseline) & 0.170 $\pm$ 0.022 & 0.347 $\pm$ 0.034 & 0.093 $\pm$ 0.042 & 0.081 $\pm$ 0.028 & 0.841 $\pm$ 0.003 & 0.756 $\pm$ 0.012 & 0.549 $\pm$ 0.008 \\
  & Reweighting & 0.055 & 0.633 & 0.050 & 0.026 & 0.808 & 0.663 & 0.414 \\
- & Threshold Adj. & \textbf{0.050 $\pm$ 0.004} & \textbf{0.585 $\pm$ 0.020} & \textbf{0.030 $\pm$ 0.010} & \textbf{0.018 $\pm$ 0.004} & 0.795 $\pm$ 0.002 & 0.626 $\pm$ 0.004 & 0.358 $\pm$ 0.008 \\
+ & Threshold Adj. & \textbf{0.051 $\pm$ 0.003} & \textbf{0.576 $\pm$ 0.014} & \textbf{0.027 $\pm$ 0.008} & \textbf{0.017 $\pm$ 0.004} & 0.795 $\pm$ 0.002 & 0.627 $\pm$ 0.003 & 0.359 $\pm$ 0.008 \\
+ & Exp. Gradient & 0.079 $\pm$ 0.001 & 0.510 $\pm$ 0.009 & 0.007 $\pm$ 0.003 & 0.011 $\pm$ 0.001 & 0.811 $\pm$ 0.001 & 0.670 $\pm$ 0.000 & 0.428 $\pm$ 0.002 \\
  & Adversarial & 0.053 $\pm$ 0.005 & 0.693 $\pm$ 0.042 & 0.161 $\pm$ 0.020 & 0.086 $\pm$ 0.013 & 0.835 $\pm$ 0.004 & 0.717 $\pm$ 0.019 & 0.514 $\pm$ 0.018 \\ \midrule
 \textbf{COMPAS (Race)} 
  & LR (Baseline) & 0.151 & 0.638 & 0.163 & 0.132 & 0.679 & 0.666 & 0.342 \\
  & RF (Baseline) & 0.153 $\pm$ 0.020 & 0.665 $\pm$ 0.038 & 0.177 $\pm$ 0.024 & 0.138 $\pm$ 0.020 & 0.650 $\pm$ 0.004 & 0.641 $\pm$ 0.004 & 0.285 $\pm$ 0.008 \\
  & ANN (Baseline) & 0.189 $\pm$ 0.020 & 0.597 $\pm$ 0.042 & 0.226 $\pm$ 0.020 & 0.172 $\pm$ 0.020 & 0.682 $\pm$ 0.003 & 0.673 $\pm$ 0.002 & 0.350 $\pm$ 0.005 \\
  & Reweighting & 0.087 & 0.795 & 0.059 & 0.103 & 0.656 & 0.642 & 0.293 \\
- & Threshold Adj. & \textbf{0.038 $\pm$ 0.010} & \textbf{0.897 $\pm$ 0.026} & \textbf{0.014 $\pm$ 0.010} & \textbf{0.018 $\pm$ 0.009} & 0.643 $\pm$ 0.003 & 0.628 $\pm$ 0.003 & 0.266 $\pm$ 0.006 \\
+ & Threshold Adj. & 0.038 $\pm$ 0.010 & 0.897 $\pm$ 0.026 & \textbf{0.014 $\pm$ 0.010} & \textbf{0.018 $\pm$ 0.009} & 0.643 $\pm$ 0.003 & 0.628 $\pm$ 0.003 & 0.266 $\pm$ 0.006 \\
+ & Exp. Gradient & \textbf{0.017 $\pm$ 0.007} & \textbf{0.957 $\pm$ 0.016} & 0.031 $\pm$ 0.018 & 0.035 $\pm$ 0.005 & 0.641 $\pm$ 0.007 & 0.629 $\pm$ 0.007 & 0.264 $\pm$ 0.014 \\
  & Adversarial & 0.129 $\pm$ 0.056 & 0.715 $\pm$ 0.114 & 0.156 $\pm$ 0.064 & 0.115 $\pm$ 0.052 & 0.676 $\pm$ 0.004 & 0.667 $\pm$ 0.005 & 0.339 $\pm$ 0.008 \\ \midrule
 \textbf{German Credit (Age)} 
  & LR (Baseline) & 0.056 & 0.934 & 0.018 & 0.011 & 0.795 & 0.679 & 0.428 \\
  & RF (Baseline) & 0.239 $\pm$ 0.048 & 0.736 $\pm$ 0.054 & 0.169 $\pm$ 0.066 & 0.218 $\pm$ 0.042 & 0.794 $\pm$ 0.009 & 0.662 $\pm$ 0.012 & 0.418 $\pm$ 0.026 \\
  & ANN (Baseline) & 0.156 $\pm$ 0.029 & 0.808 $\pm$ 0.036 & 0.115 $\pm$ 0.031 & 0.114 $\pm$ 0.041 & 0.770 $\pm$ 0.013 & 0.677 $\pm$ 0.015 & 0.382 $\pm$ 0.033 \\
- & Reweighting & 0.056 & 0.934 & 0.018 & 0.011 & 0.795 & 0.679 & 0.428 \\
- & Threshold Adj. & \textbf{0.039 $\pm$ 0.024} & \textbf{0.951 $\pm$ 0.028} & \textbf{0.087 $\pm$ 0.040} & \textbf{0.070 $\pm$ 0.034} & 0.774 $\pm$ 0.006 & 0.701 $\pm$ 0.006 & 0.412 $\pm$ 0.013 \\
- & Adversarial & 0.153 $\pm$ 0.148 & 0.835 $\pm$ 0.147 & 0.102 $\pm$ 0.117 & 0.159 $\pm$ 0.156 & 0.786 $\pm$ 0.024 & 0.666 $\pm$ 0.045 & 0.400 $\pm$ 0.085 \\ \bottomrule
+ & Reweighting & 0.056 & 0.934 & \textbf{0.018} & \textbf{0.011} & 0.795 & 0.679 & 0.428 \\
+ & Threshold Adj. & \textbf{0.039 $\pm$ 0.024} & \textbf{0.951 $\pm$ 0.028} & 0.087 $\pm$ 0.040 & 0.070 $\pm$ 0.034 & 0.774 $\pm$ 0.006 & 0.701 $\pm$ 0.006 & 0.412 $\pm$ 0.013 \\
+ & Exp. Gradient & 0.048 $\pm$ 0.018 & 0.943 $\pm$ 0.020 & 0.021 $\pm$ 0.016 & 0.041 $\pm$ 0.028 & 0.782 $\pm$ 0.004 & 0.663 $\pm$ 0.009 & 0.389 $\pm$ 0.014 \\
+ & Adversarial & 0.093 $\pm$ 0.064 & 0.887 $\pm$ 0.077 & 0.055 $\pm$ 0.062 & 0.106 $\pm$ 0.027 & 0.777 $\pm$ 0.008 & 0.677 $\pm$ 0.017 & 0.392 $\pm$ 0.029 \\ \bottomrule
 \end{tabular}
 }
 \end{table*}
@@ -147,7 +152,7 @@ The complete quantitative results, including predictive performance and fairness
 \subsection{Adult Income Dataset and the Fairness-Accuracy Trade-off}
 In the Adult dataset, the baseline models exhibit severe demographic disparity. As illustrated in Figure \ref{fig:metrics_adult}, while Threshold Adjustment successfully neutralized procedural fairness, it provides a severe manifestation of the fairness-accuracy trade-off. The Matthews Correlation Coefficient dropped precipitously from the baseline RF under Threshold Adjustment. 
 
-To force Equal Opportunity, the post-processing algorithm flipped negative predictions to positive for the unprivileged group, heavily inflating the False Positive Rate. Crucially, this confirms the impossibility theorems of Kleinberg \textit{et al.} \cite{R22} and Chouldechova \cite{R23}: because the base rate of high-income earners differs drastically between genders, mathematically forcing the True Positive Rate (Equal Opportunity) to match across groups necessitates a massive increase in the False Positive Rate for the group with the lower base rate. This drop in MCC is the mathematically guaranteed cost of overriding disparate base rates.
+To force Equal Opportunity, the post-processing algorithm flipped negative predictions to positive for the unprivileged group, heavily inflating the False Positive Rate. Crucially, this confirms the impossibility theorems of Kleinberg \textit{et al.} \cite{R22} and Chouldechova \cite{R23}: because the base rate of high-income earners differs drastically between genders, forcing the True Positive Rate (Equal Opportunity) to match across groups necessitates a massive increase in the False Positive Rate for the group with the lower base rate. This drop in MCC is the guaranteed cost of overriding disparate base rates.
 
 \begin{figure}[htbp]
 \centering
@@ -167,9 +172,9 @@ Figure \ref{fig:metrics_compas} highlights a stark contrast in baseline model be
 \end{figure}
 
 \subsection{Statlog German Credit Dataset and Stochastic Volatility}
-The German Credit dataset, comprising only 1,000 instances, exposes the raw mathematical sensitivity of complex in-processing mitigation algorithms. 
+The German Credit dataset, comprising only 1,000 instances, exposes the raw sensitivity of complex in-processing mitigation algorithms. 
 
-Critically, the 64-32 neuron MLP architecture is massively over-parameterized for a dataset of this dimensionality. When trained with a batch size of 128, the model processes the entire dataset in fewer than 8 batches per epoch. Consequently, Adversarial Debiasing demonstrated catastrophic stochastic instability (Figure \ref{fig:metrics_german}). Across multiple random initializations, the Adversarial model yielded a massive standard deviation in outcome fairness. This variance proves that generative adversarial networks require massive data batches to calculate stable gradients. On small tabular datasets, the adversary rapidly overfits the training batch, driving its internal loss to zero. The resulting chaotic gradients completely destabilize the primary predictor, proving in-processing unviable for small data regimes.
+Critically, the 64-32 neuron MLP architecture is massively over-parameterized for a dataset of this dimensionality. When trained with a batch size of 128, the model processes the entire dataset in fewer than 8 batches per epoch. Consequently, Adversarial Debiasing demonstrated catastrophic stochastic instability (Figure \ref{fig:metrics_german}). Across multiple random initializations, the Adversarial model yielded a massive standard deviation in outcome fairness. This variance proves that adversarial networks require massive data batches to calculate stable gradients. On small tabular datasets, the adversary rapidly overfits the training batch, driving its internal loss to zero. The resulting chaotic gradients completely destabilize the primary predictor, proving in-processing unviable for small data regimes.
 
 \begin{figure}[htbp]
 \centering
@@ -179,7 +184,7 @@ Critically, the 64-32 neuron MLP architecture is massively over-parameterized fo
 \end{figure}
 
 \section{Explainability Analysis}
-To provide a rigorous quantitative assessment of how specific feature interactions contribute to algorithmic bias, we integrated Explainable AI (XAI) using SHapley Additive exPlanations (SHAP). Traditional fairness metrics successfully quantify global outcome disparities but fail to mathematically explain their origins. By utilizing SHAP Interaction Values, we move beyond standard feature importance to visually and quantitatively isolate the indirect proxy mechanisms driving the model's logic. 
+To provide a rigorous quantitative assessment of how specific feature interactions contribute to algorithmic bias, we integrated Explainable AI (XAI) using SHapley Additive exPlanations (SHAP). Traditional fairness metrics successfully quantify global outcome disparities but fail to explain their origins. By utilizing SHAP Interaction Values, we move beyond standard feature importance to visually and quantitatively isolate the indirect proxy mechanisms driving the model's logic. 
 
 \subsection{Socioeconomic Proxy Bias (Adult Dataset)}
 Figure~\ref{fig:shap_adult} demonstrates a SHAP interaction plot for the Adult dataset. It shows how \textit{age} and \textit{workclass} interact. The clustering indicates that workclass functions as a highly predictive indirect proxy for demographic disparities.
@@ -211,15 +216,15 @@ For the German Credit dataset, Figure~\ref{fig:shap_german} illustrates the inte
 \label{fig:shap_german}
 \end{figure}
 
-\subsection{Mathematical Limitations of Tree SHAP}
-While these visualizations provide profound diagnostic utility, it is critical to acknowledge the mathematical limitations of post-hoc feature attributions. Tree SHAP interaction values approximate game-theoretic Shapley values by relying on path-dependent routing. When non-sensitive proxy features are highly collinear with protected attributes, Tree SHAP can arbitrarily distribute the interaction weight, potentially underestimating proxy bias severity. Furthermore, linear SHAP formulations are mathematically blind to true concurrent interaction effects. Therefore, these XAI visualizations serve as powerful diagnostic approximations rather than cryptographic proofs of model logic.
+\subsection{Limitations of Tree SHAP}
+While these visualizations provide profound diagnostic utility, it is critical to acknowledge the limitations of post-hoc feature attributions. Tree SHAP interaction values approximate game-theoretic Shapley values by relying on path-dependent routing. When non-sensitive proxy features are highly collinear with protected attributes, Tree SHAP can arbitrarily distribute the interaction weight, potentially underestimating proxy bias severity. Furthermore, linear SHAP formulations are blind to true concurrent interaction effects. Therefore, these XAI visualizations serve as powerful diagnostic approximations rather than cryptographic proofs of model logic.
 
-\subsection{Causal Validation via Feature Ablation}
+\subsection{Feature Ablation Analysis}
 To empirically validate the proxy dependencies identified by SHAP interaction analysis, we executed a targeted ablation study by removing the suspected proxy features (workclass for Adult, age for COMPAS, checking account status for German Credit) and retraining the Random Forest models. The results are summarized in Table~\ref{tab:ablation_results}.
 
 \begin{table}[htbp]
 \centering
-\caption{Causal Validation via Proxy Feature Ablation}
+\caption{Feature Ablation Analysis}
 \label{tab:ablation_results}
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{@{}llccc@{}}
@@ -243,18 +248,18 @@ To empirically validate the proxy dependencies identified by SHAP interaction an
 
 Ablating these proxy features resulted in minor drops in predictive accuracy across all datasets, indicating these features contain predictive signal. However, contrary to the naive expectation that removing proxies automatically improves fairness ("fairness through unawareness"), the Statistical Parity Difference (SPD) actually increased across all datasets (+0.060 for COMPAS). 
 
-This counter-intuitive behavior is driven by the "Proxy-Reconstruction Phenomenon" (redundant encoding). When a highly predictive explicit proxy is removed, a deep non-parametric model like a Random Forest does not simply forget the underlying pattern. Instead, the algorithm digs deeper into the covariate space, assembling a composite proxy out of multiple secondary features. Because this composite proxy relies on weaker correlations, the resulting decision boundary becomes more convoluted, dragging in statistical noise and inadvertently exacerbating demographic disparities at the margins. This conclusively demonstrates that naive proxy ablation is insufficient and reinforces the absolute necessity of explicit mathematical interventions like Threshold Adjustment.
+This counter-intuitive behavior is driven by the "Proxy-Reconstruction Phenomenon" (redundant encoding). When a highly predictive explicit proxy is removed, a deep non-parametric model like a Random Forest does not simply forget the underlying pattern. Instead, the algorithm digs deeper into the covariate space, assembling a composite proxy out of multiple secondary features. Because this composite proxy relies on weaker correlations, the resulting decision boundary becomes more convoluted, dragging in statistical noise and inadvertently exacerbating demographic disparities at the margins. This conclusively demonstrates that naive proxy ablation is insufficient and reinforces the absolute necessity of explicit interventions like Threshold Adjustment.
 
 \section{Discussion and Future Directions}
 A key conceptual limitation of the current algorithmic auditing landscape is the reliance on single-axis demographic attributes. In this study, we evaluated protected attributes (sex, race, age) in strict isolation. However, in real-world socio-technical environments, bias rarely operates on a single dimension. Rather, it operates intersectionally, compounding disparities across overlapping identities. For example, within the high-stakes COMPAS dataset, evaluating "race" and "gender" in isolation masks the compounded punitive bias experienced by specific intersectional subgroups, such as Black women. Recent literature, such as frameworks proposed by Scarone \textit{et al.} at AIES 2025 \cite{R12}, emphasizes that bias mitigation must account for these multi-dimensional intersectional definitions to prevent the inadvertent exaggeration of secondary disparities. Future work will expand this framework by utilizing techniques like intersectional subgroup reweighting to scale our evaluation pipeline to multi-axis identities, providing more rigorous formal fairness guarantees.
 
 \section{Conclusion}
-This research presents a comprehensive, multi-metric framework for detecting, mitigating, and explaining bias in machine learning models. Experimental evaluation across three diverse datasets demonstrates that fairness-oriented methods can reduce demographic disparities while introducing unavoidable, and sometimes severe, trade-offs in predictive performance (MCC degradation). Threshold Adjustment consistently achieved the most robust fairness improvements, while Adversarial Debiasing demonstrated catastrophic stochastic sensitivity on small tabular datasets. Additionally, our novel causal ablation study proves empirically that proxy ablation (removing features like age or workclass) often paradoxically increases demographic disparities (e.g., +0.060 SPD). This serves as a powerful argument against "naive" debiasing (simply removing sensitive proxy features), as the model actively compensates by exploiting alternative complex correlations. The findings emphasize the absolute necessity of integrating explicit mathematical interventions, variance reporting, and XAI techniques to develop truly transparent and accountable systems.
+This research presents a comprehensive, multi-metric framework for detecting, mitigating, and explaining bias in machine learning models. Experimental evaluation across three diverse datasets demonstrates that fairness-oriented methods can reduce demographic disparities while introducing unavoidable, and sometimes severe, trade-offs in predictive performance (MCC degradation). Threshold Adjustment consistently achieved the most robust fairness improvements, while Adversarial Debiasing demonstrated catastrophic stochastic sensitivity on small tabular datasets. Additionally, our feature ablation study demonstrates empirically that proxy ablation (removing features like age or workclass) often paradoxically increases measured demographic disparities (e.g., +0.060 SPD). This indicates that rather than causing bias, proxy variables were effectively masking it through redundant encoding. Removing them forces the model to exploit noisier alternative correlations, highlighting the insufficiency of "naive" debiasing (Fairness Through Unawareness). The findings emphasize the absolute necessity of integrating explicit interventions, variance reporting, and XAI techniques to develop truly transparent and accountable systems.
 
 \begin{thebibliography}{21}
 
 \bibitem{R1}
-Anonymous \textit{et al.}, ``Fairness in machine learning: A Compact Survey,'' in \textit{Proc. ESANN 2026}, 2026.
+C. Dwork, M. Hardt, T. Pitassi, O. Reingold, and R. Zemel, ``Fairness through awareness,'' in \textit{Proceedings of the 3rd Innovations in Theoretical Computer Science Conference}, 2012.
 
 \bibitem{R2}
 S. Uddin, H. Lu, and F. Hajati, ``Fairness-preserving framework for machine learning: Data bias quantification, model evaluation, and robustness across multiple datasets,'' \textit{AI and Ethics}, vol. 6, art. 25, 2026.
@@ -321,9 +326,9 @@ B. Bilodeau \textit{et al.},
 \textit{Proceedings of the National Academy of Sciences (PNAS)}, vol. 121, no. 2, 2024.
 
 \bibitem{R16}
-Anonymous \textit{et al.}, 
-``Survey on Machine Learning Biases and Mitigation Techniques,'' 
-\textit{Information}, MDPI, vol. 15, no. 3, 2024.
+R. Zemel, Y. Wu, K. Swersky, T. Pitassi, and C. Dwork, 
+``Learning fair representations,'' 
+\textit{International Conference on Machine Learning (ICML)}, 2013.
 
 \bibitem{R17}
 M. Openja, G. Laberge, and F. Khomh, 
